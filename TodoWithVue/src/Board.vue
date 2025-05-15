@@ -7,7 +7,7 @@
     />
 
     <div v-if="currentView === 'Board'">
-      <div class="flex gap-6 overflow-x-auto pb-6 items-start">
+      <div class="flex gap-4 overflow-x-auto pb-6 items-start">
         <!-- Section Rendering -->
         <div
           v-for="section in filteredSections"
@@ -41,6 +41,12 @@
                 >
                   <button
                     class="w-full px-4 py-2 text-left hover:bg-gray-100"
+                    @click="openEditSectionModal(section)"
+                  >
+                    Edit Section
+                  </button>
+                  <button
+                    class="w-full px-4 py-2 text-left hover:bg-gray-100"
                     @click="confirmDeleteSection(section.id)"
                   >
                     Delete Section
@@ -50,7 +56,7 @@
             </div>
           </div>
 
-          <!-- Task Section (note: the Section component no longer displays the title) -->
+          <!-- Task Section -->
           <Section
             :tasks="section.tasks"
             @add-task="openModal(section.id)"
@@ -86,8 +92,8 @@
     <!-- Add Section Modal -->
     <div
       v-if="showAddSectionModal"
-      class="fixed inset-0 flex items-center justify-center z-50"
-      style="background-color: rgba(0, 0, 0, 0.5);"
+      class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
+       style="background-color: rgba(0, 0, 0, 0.5);"
     >
       <div class="bg-white p-6 rounded shadow-lg w-80">
         <h2 class="text-lg font-semibold mb-4">Add New Section</h2>
@@ -112,6 +118,35 @@
         </div>
       </div>
     </div>
+
+    <!-- Edit Section Modal -->
+    <div
+      v-if="showEditSectionModal"
+      class="fixed inset-0 flex items-center justify-center z-50 bg-opacity-50"
+    >
+      <div class="bg-white p-6 rounded shadow-lg w-80">
+        <h2 class="text-lg font-semibold mb-4">Edit Section</h2>
+        <input
+          v-model="editedSectionTitle"
+          placeholder="Edit section name"
+          class="w-full border p-2 rounded mb-4"
+        />
+        <div class="flex justify-end gap-2">
+          <button
+            @click="showEditSectionModal = false"
+            class="px-4 py-2 text-gray-600 hover:text-black"
+          >
+            Cancel
+          </button>
+          <button
+            @click="updateSection"
+            class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+          >
+            Update
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -123,6 +158,7 @@ import AddTaskModal from "./components/AddTaskModal.vue";
 import ListView from "./components/ListView.vue";
 import TableView from "./components/TableView.vue";
 
+// State
 const sections = ref([
   {
     id: 1,
@@ -151,24 +187,25 @@ const currentView = ref("Board");
 const searchQuery = ref("");
 const activeDropdown = ref(null);
 
-// Opens task modal
+const showEditSectionModal = ref(false);
+const editedSectionTitle = ref("");
+const editingSection = ref(null);
+
+// Task Modal
 function openModal(sectionId) {
   currentSectionId.value = sectionId;
   isModalOpen.value = true;
 }
 
-// Adds a new task
 function addTask(task) {
-  const section = sections.value.find(
-    (s) => s.id === currentSectionId.value
-  );
+  const section = sections.value.find((s) => s.id === currentSectionId.value);
   if (section) {
     section.tasks.push({ ...task, id: Date.now() });
   }
   isModalOpen.value = false;
 }
 
-// Deletes a task from section
+// Delete Task
 function deleteTask(sectionId, taskId) {
   const section = sections.value.find((s) => s.id === sectionId);
   if (section) {
@@ -176,7 +213,7 @@ function deleteTask(sectionId, taskId) {
   }
 }
 
-// Add section using modal
+// Add Section
 function addSection() {
   if (newSectionTitle.value.trim()) {
     sections.value.push({
@@ -189,29 +226,45 @@ function addSection() {
   }
 }
 
-// Dropdown toggle
+// Dropdown Toggle
 function toggleDropdown(sectionId) {
   activeDropdown.value =
     activeDropdown.value === sectionId ? null : sectionId;
 }
 
-// Confirm section deletion
+// Delete Section
 function confirmDeleteSection(sectionId) {
   sections.value = sections.value.filter((s) => s.id !== sectionId);
   activeDropdown.value = null;
 }
 
-// View tab switch
+// Edit Section
+function openEditSectionModal(section) {
+  editingSection.value = section;
+  editedSectionTitle.value = section.title;
+  showEditSectionModal.value = true;
+  activeDropdown.value = null;
+}
+
+function updateSection() {
+  if (editingSection.value && editedSectionTitle.value.trim()) {
+    editingSection.value.title = editedSectionTitle.value.trim();
+    showEditSectionModal.value = false;
+    editedSectionTitle.value = "";
+  }
+}
+
+// Tabs
 function changeTab(tab) {
   currentView.value = tab;
 }
 
-// Search handler
+// Search
 function handleSearch(query) {
   searchQuery.value = query.toLowerCase();
 }
 
-// Filter sections based on search
+// Filtered Sections
 const filteredSections = computed(() => {
   if (!searchQuery.value) return sections.value;
   return sections.value.map((section) => ({
