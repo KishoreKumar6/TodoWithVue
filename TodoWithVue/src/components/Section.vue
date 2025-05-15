@@ -1,7 +1,7 @@
 <template>
-  <div class="flex-1 bg-gray-200 p-5 rounded-2xl shadow-md min-h-[500px] min-w-[300px] border border-gray-200">
+  <div class="flex-1 bg-gray-200 p-2 rounded-2xl shadow-md min-h-[500px] min-w-[300px] border border-gray-200">
     <!-- Section Header -->
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex justify-between items-center mb-3">
       <h2 class="text-xl font-bold text-gray-800">{{ title }}</h2>
     </div>
 
@@ -10,29 +10,29 @@
       :list="tasks"
       group="tasks"
       item-key="id"
-      class="space-y-3 min-h-[130px] flex flex-col"
+      class="flex flex-col space-y-1 min-h-[130px]"
       :animation="200"
       @add="onAdd"
     >
       <template #item="{ element }">
         <div
-          class="relative p-4 bg-gradient-to-br from-purple-100 to-white rounded-xl shadow hover:shadow-lg transition-shadow"
+          class="relative p-2 bg-gradient-to-br from-purple-100 to-white rounded-xl shadow hover:shadow-md transition-shadow"
         >
           <!-- Task Dropdown -->
-          <div class="absolute top-2 right-2">
+          <div class="absolute top-1 right-1">
             <div class="relative">
               <button
-                class="hover:cursor-pointer"
+                class="hover:cursor-pointer text-lg"
                 @click="toggleDropdown(element.id)"
               >
                 ⋮
               </button>
               <div
                 v-if="dropdownOpen === element.id"
-                class="absolute right-0 mt-2 w-24 bg-white shadow rounded text-sm z-10"
+                class="absolute right-0 mt-1 w-24 bg-white shadow rounded text-sm z-10"
               >
                 <button
-                  class="block w-full text-left rounded-lg bg-gray-100 px-4 py-2 hover:bg-gray-200"
+                  class="block w-full text-left rounded-lg bg-gray-100 px-3 py-1 hover:bg-gray-200"
                   @click="deleteTask(element.id)"
                 >
                   Delete
@@ -42,7 +42,7 @@
           </div>
 
           <!-- Label with Dot -->
-          <div class="flex items-center text-left">
+          <div class="flex items-center text-left mb-1">
             <p
               :class="{
                 'bg-blue-100 text-blue-800': normalizeLabel(element.label) === 'notstarted',
@@ -50,10 +50,10 @@
                 'bg-green-100 text-green-800': normalizeLabel(element.label) === 'complete',
                 'bg-pink-100 text-pink-800': normalizeLabel(element.label) === 'ontrack'
               }"
-              class="text-sm rounded-sm px-3 py-1 inline-flex items-center font-medium"
+              class="text-xs rounded-sm px-2 py-0.5 inline-flex items-center font-medium"
             >
               <span
-                class="w-2 h-2 rounded-full mr-2"
+                class="w-2 h-2 rounded-full mr-1"
                 :class="{
                   'bg-blue-800': normalizeLabel(element.label) === 'notstarted',
                   'bg-orange-800': normalizeLabel(element.label) === 'inresearch',
@@ -66,20 +66,20 @@
           </div>
 
           <!-- Task Title and Description -->
-          <h3 class="text-lg font-semibold text-gray-800 text-left">
+          <h3 class="text-sm font-semibold text-gray-800 text-left leading-snug">
             {{ element.title }}
           </h3>
-          <p class="text-sm text-gray-600 mt-1 text-left">
+          <p class="text-xs text-gray-600 mt-0.5 text-left leading-snug">
             {{ truncatedDescription(element.description) }}
           </p>
 
           <!-- Meta Info -->
-          <div class="mt-2 text-xs text-gray-500 space-y-1 text-left">
-            <p class="mb-2">
-              Due Date: <span class="font-medium text-gray-700">{{ element.dueDate }}</span>
+          <div class="mt-1 text-xs text-gray-500 text-left space-y-0.5">
+            <p>
+              Due: <span class="font-medium text-gray-700">{{ element.dueDate }}</span>
             </p>
-            <p class="mb-2">
-              Assignee: <span class="font-medium text-gray-700">{{ element.assignee }}</span>
+            <p>
+              Assigned: <span class="font-medium text-gray-700">{{ element.assignee }}</span>
             </p>
             <p class="text-right">
               <label
@@ -88,7 +88,7 @@
                   'bg-orange-200 text-orange-800': element.priority === 'Medium',
                   'bg-red-200 text-red-600': element.priority === 'High'
                 }"
-                class="rounded p-1"
+                class="rounded px-1"
               >
                 {{ element.priority }}
               </label>
@@ -104,7 +104,7 @@
           class="flex flex-col h-5 bg-gray-200 rounded-lg hover:bg-gray-200 cursor-pointer"
           @click="$emit('add-task')"
         >
-          <span class="text-sm text-gray-500 font-bold">+ Add task</span>
+          <span class="text-xs text-gray-500 font-bold">+ Add task</span>
         </div>
       </template>
     </draggable>
