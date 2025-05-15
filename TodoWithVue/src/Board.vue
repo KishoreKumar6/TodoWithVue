@@ -8,19 +8,60 @@
 
     <div v-if="currentView === 'Board'">
       <div class="flex gap-6 overflow-x-auto pb-6 items-start">
-        <Section
+        <!-- Section Rendering -->
+        <div
           v-for="section in filteredSections"
           :key="section.id"
-          :title="section.title"
-          :tasks="section.tasks"
-          @add-task="openModal(section.id)"
-          @delete-task="deleteTask(section.id, $event)"
-        />
+          class="min-w-[300px] relative"
+        >
+          <!-- Section Header (Title, + button, and Dropdown) -->
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-lg font-semibold">{{ section.title }}</h2>
+            <div class="flex items-center space-x-2">
+              <!-- External + button to add task remains in header -->
+              <button
+                class="text-gray-400 hover:text-gray-700"
+                @click="openModal(section.id)"
+                title="Add Task"
+              >
+                +
+              </button>
+              <div class="relative">
+                <button
+                  class="text-gray-400 hover:text-gray-700"
+                  @click="toggleDropdown(section.id)"
+                  title="More Options"
+                >
+                  ⋯
+                </button>
+                <!-- Dropdown -->
+                <div
+                  v-if="activeDropdown === section.id"
+                  class="absolute right-0 mt-2 w-36 bg-white border rounded shadow-md z-10"
+                >
+                  <button
+                    class="w-full px-4 py-2 text-left hover:bg-gray-100"
+                    @click="confirmDeleteSection(section.id)"
+                  >
+                    Delete Section
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Task Section (note: the Section component no longer displays the title) -->
+          <Section
+            :tasks="section.tasks"
+            @add-task="openModal(section.id)"
+            @delete-task="deleteTask(section.id, $event)"
+          />
+        </div>
 
         <!-- + Add Section -->
         <div
           class="min-w-[300px] h-fit p-5 bg-white rounded-2xl shadow-md flex items-center justify-center text-purple-600 hover:bg-purple-50 cursor-pointer"
-          @click="addSection"
+          @click="showAddSectionModal = true"
         >
           + Add Section
         </div>
@@ -35,11 +76,42 @@
       <TableView :sections="filteredSections" />
     </div>
 
+    <!-- Add Task Modal -->
     <AddTaskModal
       v-if="isModalOpen"
       @submit="addTask"
       @close="isModalOpen = false"
     />
+
+    <!-- Add Section Modal -->
+    <div
+      v-if="showAddSectionModal"
+      class="fixed inset-0 flex items-center justify-center z-50"
+      style="background-color: rgba(0, 0, 0, 0.5);"
+    >
+      <div class="bg-white p-6 rounded shadow-lg w-80">
+        <h2 class="text-lg font-semibold mb-4">Add New Section</h2>
+        <input
+          v-model="newSectionTitle"
+          placeholder="Enter section name"
+          class="w-full border p-2 rounded mb-4"
+        />
+        <div class="flex justify-end gap-2">
+          <button
+            @click="showAddSectionModal = false"
+            class="px-4 py-2 text-gray-600 hover:text-black"
+          >
+            Cancel
+          </button>
+          <button
+            @click="addSection"
+            class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+          >
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -72,27 +144,31 @@ const sections = ref([
 ]);
 
 const isModalOpen = ref(false);
+const showAddSectionModal = ref(false);
+const newSectionTitle = ref("");
 const currentSectionId = ref(null);
 const currentView = ref("Board");
 const searchQuery = ref("");
-let newSectionCount = 1;
+const activeDropdown = ref(null);
 
-// Opens the modal for the given section id.
+// Opens task modal
 function openModal(sectionId) {
   currentSectionId.value = sectionId;
   isModalOpen.value = true;
 }
 
-// Adds a new task to the current section.
+// Adds a new task
 function addTask(task) {
-  const section = sections.value.find((s) => s.id === currentSectionId.value);
+  const section = sections.value.find(
+    (s) => s.id === currentSectionId.value
+  );
   if (section) {
     section.tasks.push({ ...task, id: Date.now() });
   }
   isModalOpen.value = false;
 }
 
-// Deletes a task from the specified section.
+// Deletes a task from section
 function deleteTask(sectionId, taskId) {
   const section = sections.value.find((s) => s.id === sectionId);
   if (section) {
@@ -100,26 +176,42 @@ function deleteTask(sectionId, taskId) {
   }
 }
 
-// Adds a new section.
+// Add section using modal
 function addSection() {
-  sections.value.push({
-    id: Date.now(),
-    title: `New Section ${newSectionCount++}`,
-    tasks: [],
-  });
+  if (newSectionTitle.value.trim()) {
+    sections.value.push({
+      id: Date.now(),
+      title: newSectionTitle.value.trim(),
+      tasks: [],
+    });
+    newSectionTitle.value = "";
+    showAddSectionModal.value = false;
+  }
 }
 
-// Changes the current view/tab.
+// Dropdown toggle
+function toggleDropdown(sectionId) {
+  activeDropdown.value =
+    activeDropdown.value === sectionId ? null : sectionId;
+}
+
+// Confirm section deletion
+function confirmDeleteSection(sectionId) {
+  sections.value = sections.value.filter((s) => s.id !== sectionId);
+  activeDropdown.value = null;
+}
+
+// View tab switch
 function changeTab(tab) {
   currentView.value = tab;
 }
 
-// Handles the search query.
+// Search handler
 function handleSearch(query) {
   searchQuery.value = query.toLowerCase();
 }
 
-// Filters sections based on search query.
+// Filter sections based on search
 const filteredSections = computed(() => {
   if (!searchQuery.value) return sections.value;
   return sections.value.map((section) => ({
