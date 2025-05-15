@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import taskRoutes from "./routes/tasks.js";
+import taskRoutes from "./Routes/tasks.js";
 import dotenv from "dotenv";
 
 dotenv.config();
