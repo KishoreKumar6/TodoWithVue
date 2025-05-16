@@ -58,6 +58,7 @@
 
           <!-- Task Section -->
           <Section
+          :title="section.title"
             :tasks="section.tasks"
             @add-task="openModal(section.id)"
             @delete-task="deleteTask(section.id, $event)"
