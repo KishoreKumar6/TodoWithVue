@@ -1,7 +1,7 @@
 <template>
   <div
     class="fixed inset-0 flex items-center justify-center z-50"
-    style="background-color: rgba(0, 0, 0, 0.5);"
+    style="background-color: rgba(0, 0, 0, 0.5)"
   >
     <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
       <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
@@ -105,45 +105,50 @@
             :disabled="loading"
             class="px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-lg hover:opacity-90 transition duration-150"
           >
-            {{ loading ? 'Saving...' : 'Add Task' }}
+            {{ loading ? "Saving..." : "Add Task" }}
           </button>
         </div>
       </form>
 
-      <p v-if="error" class="text-red-500 text-sm mt-4 text-center">{{ error }}</p>
+      <p v-if="error" class="text-red-500 text-sm mt-4 text-center">
+        {{ error }}
+      </p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
-import axios from 'axios';
+import { reactive, ref } from "vue";
+import axios from "axios";
 
-const emit = defineEmits(['submit', 'close']);
+const emit = defineEmits(["submit", "close"]);
 
 const task = reactive({
-  title: '',
-  description: '',
-  dueDate: '',
-  assignee: '',
-  priority: 'Low',
-  label: 'Not Started',
+  title: "",
+  description: "",
+  dueDate: "",
+  assignee: "",
+  priority: "Low",
+  label: "Not Started",
 });
 
 const loading = ref(false);
-const error = ref('');
+const error = ref("");
 
 async function submit() {
   loading.value = true;
-  error.value = '';
+  error.value = "";
 
   try {
-    const res = await axios.post('https://todowithvue-3.onrender.com/api/tasks/create', task);
-    emit('submit', res.data); // Send the created task back to parent
-    emit('close');
+    const res = await axios.post(
+      "https://todowithvue-3.onrender.com/api/tasks/create",
+      task
+    );
+    emit("submit", res.data); // Send the created task back to parent
+    emit("close");
   } catch (err) {
-    error.value = err.response?.data?.error || 'Failed to save task.';
-    console.error('Error saving task:', err);
+    error.value = err.response?.data?.error || "Failed to save task.";
+    console.error("Error saving task:", err);
   } finally {
     loading.value = false;
   }

@@ -58,7 +58,7 @@
 
           <!-- Task Section -->
           <Section
-          :title="section.title"
+            :title="section.title"
             :tasks="section.tasks"
             @add-task="openModal(section.id)"
             @delete-task="deleteTask(section.id, $event)"
@@ -94,7 +94,7 @@
     <div
       v-if="showAddSectionModal"
       class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50"
-       style="background-color: rgba(0, 0, 0, 0.5);"
+      style="background-color: rgba(0, 0, 0, 0.5)"
     >
       <div class="bg-white p-6 rounded shadow-lg w-80">
         <h2 class="text-lg font-semibold mb-4">Add New Section</h2>
@@ -124,7 +124,7 @@
     <div
       v-if="showEditSectionModal"
       class="fixed inset-0 flex items-center justify-center z-50 bg-opacity-50"
-       style="background-color: rgba(0, 0, 0, 0.5);"
+      style="background-color: rgba(0, 0, 0, 0.5)"
     >
       <div class="bg-white p-6 rounded shadow-lg w-80">
         <h2 class="text-lg font-semibold mb-4">Edit Section</h2>
@@ -258,8 +258,7 @@ function addSection() {
 }
 
 function toggleDropdown(sectionId) {
-  activeDropdown.value =
-    activeDropdown.value === sectionId ? null : sectionId;
+  activeDropdown.value = activeDropdown.value === sectionId ? null : sectionId;
 }
 
 function confirmDeleteSection(sectionId) {

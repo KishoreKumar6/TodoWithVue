@@ -2,7 +2,6 @@
   <div
     class="flex-1 bg-gray-200 p-2 rounded-2xl shadow-md min-h-[500px] min-w-[300px] border border-gray-200 relative"
   >
-
     <!-- Draggable Task List -->
     <draggable
       :list="tasks"
@@ -49,10 +48,14 @@
           <div class="flex items-center text-left mb-1">
             <p
               :class="{
-                'bg-blue-100 text-blue-800': normalizeLabel(element.label) === 'notstarted',
-                'bg-orange-100 text-orange-800': normalizeLabel(element.label) === 'inresearch',
-                'bg-green-100 text-green-800': normalizeLabel(element.label) === 'complete',
-                'bg-pink-100 text-pink-800': normalizeLabel(element.label) === 'ontrack'
+                'bg-blue-100 text-blue-800':
+                  normalizeLabel(element.label) === 'notstarted',
+                'bg-orange-100 text-orange-800':
+                  normalizeLabel(element.label) === 'inresearch',
+                'bg-green-100 text-green-800':
+                  normalizeLabel(element.label) === 'complete',
+                'bg-pink-100 text-pink-800':
+                  normalizeLabel(element.label) === 'ontrack',
               }"
               class="text-xs rounded-sm px-2 py-0.5 inline-flex items-center font-medium"
             >
@@ -60,9 +63,10 @@
                 class="w-2 h-2 rounded-full mr-1"
                 :class="{
                   'bg-blue-800': normalizeLabel(element.label) === 'notstarted',
-                  'bg-orange-800': normalizeLabel(element.label) === 'inresearch',
+                  'bg-orange-800':
+                    normalizeLabel(element.label) === 'inresearch',
                   'bg-green-800': normalizeLabel(element.label) === 'complete',
-                  'bg-pink-800': normalizeLabel(element.label) === 'ontrack'
+                  'bg-pink-800': normalizeLabel(element.label) === 'ontrack',
                 }"
               ></span>
               {{ element.label }}
@@ -70,7 +74,9 @@
           </div>
 
           <!-- Task Title and Description -->
-          <h3 class="text-sm font-semibold text-gray-800 text-left leading-snug">
+          <h3
+            class="text-sm font-semibold text-gray-800 text-left leading-snug"
+          >
             {{ element.title }}
           </h3>
           <p class="text-xs text-gray-600 mt-0.5 text-left leading-snug">
@@ -81,18 +87,23 @@
           <div class="mt-1 text-xs text-gray-500 text-left space-y-0.5">
             <p>
               Due:
-              <span class="font-medium text-gray-700">{{ element.dueDate }}</span>
+              <span class="font-medium text-gray-700">{{
+                element.dueDate
+              }}</span>
             </p>
             <p>
               Assigned:
-              <span class="font-medium text-gray-700">{{ element.assignee }}</span>
+              <span class="font-medium text-gray-700">{{
+                element.assignee
+              }}</span>
             </p>
             <p class="text-right">
               <label
                 :class="{
                   'bg-blue-200 text-blue-800': element.priority === 'Low',
-                  'bg-orange-200 text-orange-800': element.priority === 'Medium',
-                  'bg-red-200 text-red-600': element.priority === 'High'
+                  'bg-orange-200 text-orange-800':
+                    element.priority === 'Medium',
+                  'bg-red-200 text-red-600': element.priority === 'High',
                 }"
                 class="rounded px-1"
               >
@@ -119,7 +130,7 @@
       <div
         v-if="isEditModalOpen"
         class="fixed inset-0 flex items-center justify-center z-50"
-         style="background-color: rgba(0, 0, 0, 0.5);"
+        style="background-color: rgba(0, 0, 0, 0.5)"
       >
         <div
           class="max-w-md w-full mx-4 backdrop-blur-md bg-white p-6 rounded-2xl shadow-xl transition-all duration-300 border border-gray-300"
@@ -148,9 +159,7 @@
           </div>
           <div class="space-y-4">
             <div>
-              <label
-                class="block mb-1 text-sm font-medium text-gray-700"
-              >
+              <label class="block mb-1 text-sm font-medium text-gray-700">
                 Task Title
               </label>
               <input
@@ -161,9 +170,7 @@
               />
             </div>
             <div>
-              <label
-                class="block mb-1 text-sm font-medium text-gray-700"
-              >
+              <label class="block mb-1 text-sm font-medium text-gray-700">
                 Description
               </label>
               <textarea
@@ -174,9 +181,7 @@
               ></textarea>
             </div>
             <div>
-              <label
-                class="block mb-1 text-sm font-medium text-gray-700"
-              >
+              <label class="block mb-1 text-sm font-medium text-gray-700">
                 Assignee
               </label>
               <input
@@ -187,9 +192,7 @@
               />
             </div>
             <div>
-              <label
-                class="block mb-1 text-sm font-medium text-gray-700"
-              >
+              <label class="block mb-1 text-sm font-medium text-gray-700">
                 Due Date
               </label>
               <input
@@ -283,7 +286,7 @@ function updateTask() {
   if (taskIndex !== -1) {
     props.tasks[taskIndex] = {
       ...editableTask,
-      label: props.tasks[taskIndex].label
+      label: props.tasks[taskIndex].label,
     };
   }
   closeEditModal();
