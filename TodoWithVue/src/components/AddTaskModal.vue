@@ -70,9 +70,8 @@
               v-model="task.priority"
               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-150"
             >
-              <option>Low</option>
-              <option>Medium</option>
-              <option>High</option>
+              <option>Programming</option>
+              <option>Design</option>
             </select>
           </div>
           <div>
@@ -128,7 +127,7 @@ const task = reactive({
   description: "",
   dueDate: "",
   assignee: "",
-  priority: "Low",
+  priority: "Programming",
   label: "Not Started",
 });
 

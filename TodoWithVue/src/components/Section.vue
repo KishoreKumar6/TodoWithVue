@@ -13,7 +13,7 @@
     >
       <template #item="{ element }">
         <div
-          class="relative p-2 bg-gradient-to-br from-purple-100 to-white rounded-xl shadow hover:shadow-md transition-shadow"
+          class="relative p-2 bg-white rounded-xl shadow hover:shadow-md transition-shadow"
         >
           <!-- Task Dropdown -->
           <div class="absolute top-1 right-1">
@@ -97,13 +97,13 @@
                 element.assignee
               }}</span>
             </p>
-            <p class="text-right">
+            <p class="text-right mb-1">
               <label
                 :class="{
-                  'bg-blue-200 text-blue-800': element.priority === 'Low',
-                  'bg-orange-200 text-orange-800':
-                    element.priority === 'Medium',
-                  'bg-red-200 text-red-600': element.priority === 'High',
+                  'bg-gray-200 p-2 text-gray-700 ':
+                    element.priority === 'Programming',
+                  'bg-gray-200 p-1 text-gray-700':
+                    element.priority === 'Design',
                 }"
                 class="rounded px-1"
               >
@@ -200,6 +200,19 @@
                 type="date"
                 class="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
+            </div>
+            <div>
+              <label class="block mb-1 text-sm font-medium text-gray-700">
+                Priority
+              </label>
+              <select
+                v-model="editableTask.priority"
+                class="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              >
+                <option disabled value="">Select priority</option>
+                <option value="Programming">Programming</option>
+                <option value="Design">Design</option>
+              </select>
             </div>
           </div>
           <div class="flex justify-end items-center mt-6">
