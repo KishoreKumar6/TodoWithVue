@@ -7,7 +7,7 @@
     />
 
     <div v-if="currentView === 'Board'">
-      <div class="flex gap-4 overflow-x-auto pb-6 items-start">
+      <div class="flex gap-8 overflow-x-auto pb-6 items-start">
         <!-- Section Rendering -->
         <div
           v-for="section in filteredSections"
@@ -151,36 +151,16 @@
     </div>
   </div>
 </template>
-
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import Header from "./components/Header.vue";
 import Section from "./components/Section.vue";
 import AddTaskModal from "./components/AddTaskModal.vue";
 import ListView from "./components/ListView.vue";
 import TableView from "./components/TableView.vue";
 
-// State
-const sections = ref([
-  {
-    id: 1,
-    title: "To do",
-    tasks: [
-      {
-        id: 101,
-        title: "Design Homepage",
-        description: "Create the layout for the homepage.",
-        dueDate: "2025-06-01",
-        priority: "High",
-        label: "Not Started",
-        assignee: "John Doe",
-      },
-    ],
-  },
-  { id: 2, title: "In Progress", tasks: [] },
-  { id: 3, title: "Complete", tasks: [] },
-]);
-
+// --- STATE ---
+const sections = ref([]); // initially empty; will load from localStorage
 const isModalOpen = ref(false);
 const showAddSectionModal = ref(false);
 const newSectionTitle = ref("");
@@ -188,12 +168,63 @@ const currentSectionId = ref(null);
 const currentView = ref("Board");
 const searchQuery = ref("");
 const activeDropdown = ref(null);
-
 const showEditSectionModal = ref(false);
 const editedSectionTitle = ref("");
 const editingSection = ref(null);
 
-// Task Modal
+// --- LOCAL STORAGE FUNCTIONS ---
+const STORAGE_KEY = "taskBoardSections";
+
+function loadSections() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try {
+      sections.value = JSON.parse(saved);
+    } catch (e) {
+      console.error("Error parsing saved sections:", e);
+      sections.value = defaultSections();
+    }
+  } else {
+    sections.value = defaultSections();
+  }
+}
+
+function saveSections() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(sections.value));
+}
+
+// Default fallback sections
+function defaultSections() {
+  return [
+    {
+      id: 1,
+      title: "To do",
+      tasks: [
+        {
+          id: 101,
+          title: "Design Homepage",
+          description: "Create the layout for the homepage.",
+          dueDate: "2025-06-01",
+          priority: "High",
+          label: "Not Started",
+          assignee: "John Doe",
+        },
+      ],
+    },
+    { id: 2, title: "In Progress", tasks: [] },
+    { id: 3, title: "Done", tasks: [] },
+  ];
+}
+
+// --- WATCHER to persist changes ---
+watch(sections, saveSections, { deep: true });
+
+// --- LIFECYCLE: Load from localStorage on mount ---
+onMounted(() => {
+  loadSections();
+});
+
+// --- MODAL & CRUD OPERATIONS ---
 function openModal(sectionId) {
   currentSectionId.value = sectionId;
   isModalOpen.value = true;
@@ -207,7 +238,6 @@ function addTask(task) {
   isModalOpen.value = false;
 }
 
-// Delete Task
 function deleteTask(sectionId, taskId) {
   const section = sections.value.find((s) => s.id === sectionId);
   if (section) {
@@ -215,7 +245,6 @@ function deleteTask(sectionId, taskId) {
   }
 }
 
-// Add Section
 function addSection() {
   if (newSectionTitle.value.trim()) {
     sections.value.push({
@@ -228,19 +257,16 @@ function addSection() {
   }
 }
 
-// Dropdown Toggle
 function toggleDropdown(sectionId) {
   activeDropdown.value =
     activeDropdown.value === sectionId ? null : sectionId;
 }
 
-// Delete Section
 function confirmDeleteSection(sectionId) {
   sections.value = sections.value.filter((s) => s.id !== sectionId);
   activeDropdown.value = null;
 }
 
-// Edit Section
 function openEditSectionModal(section) {
   editingSection.value = section;
   editedSectionTitle.value = section.title;
@@ -256,17 +282,14 @@ function updateSection() {
   }
 }
 
-// Tabs
 function changeTab(tab) {
   currentView.value = tab;
 }
 
-// Search
 function handleSearch(query) {
   searchQuery.value = query.toLowerCase();
 }
 
-// Filtered Sections
 const filteredSections = computed(() => {
   if (!searchQuery.value) return sections.value;
   return sections.value.map((section) => ({

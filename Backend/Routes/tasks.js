@@ -38,13 +38,5 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
-  try {
-    await Task.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Task deleted' });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
 
 export default router;
