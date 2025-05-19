@@ -82,10 +82,10 @@
               v-model="task.label"
               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-150"
             >
-              <option>Not Started</option>
-              <option>In Research</option>
-              <option>On Track</option>
-              <option>Complete</option>
+              <option>Yesterday</option>
+              <option>Today</option>
+              <option>Tomorrow</option>
+              <option>Day After Tomorrow</option>
             </select>
           </div>
         </div>
@@ -128,7 +128,7 @@ const task = reactive({
   dueDate: "",
   assignee: "",
   priority: "Programming",
-  label: "Not Started",
+  label: "Yesterday",
 });
 
 const loading = ref(false);

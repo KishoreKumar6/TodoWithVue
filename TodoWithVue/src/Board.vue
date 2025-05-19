@@ -206,7 +206,7 @@ function defaultSections() {
           description: "Create the layout for the homepage.",
           dueDate: "2025-06-01",
           priority: "Programming",
-          label: "Not Started",
+          label: "Yesterday",
           assignee: "John Doe",
         },
       ],

@@ -1,103 +1,89 @@
 <template>
   <div>
-    <!-- Title and Actions Row -->
+    <!-- Header Section -->
     <div class="flex justify-between items-center mb-6">
-      <div>
-        <h2 class="text-2xl font-semibold text-gray-800 text-left">Tasks</h2>
-        <p class="text-sm text-gray-500">
-          Keep track of your team's tasks all in one place.
-        </p>
+      <div class="flex items-center gap-4">
+        <button class="text-gray-600 hover:text-gray-800">
+          <!-- Back Button -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+        <button class="text-gray-600 hover:text-gray-800">
+          <i
+            class="fa-brands fa-apple text-white bg-black text-2xl p-3 rounded-lg"
+          ></i>
+        </button>
+
+        <div>
+          <h2 class="text-xl font-semibold text-gray-800 text-left">Apple</h2>
+          <p class="text-sm text-gray-500">5 boards   24 members</p>
+        </div>
       </div>
 
-      <div class="flex items-center gap-4">
-        <div class="flex -space-x-2">
-          <img
-            v-for="(avatar, index) in avatars"
-            :key="index"
-            :src="avatar"
-            class="w-8 h-8 rounded-full border-2 border-white"
-            alt="Avatar"
+      <!-- Right Side: Search + Share + Settings -->
+      <div class="flex items-center gap-3">
+        <div class="relative">
+          <!-- Add extra left padding to make room for the icon -->
+          <input
+            type="text"
+            placeholder="Search"
+            v-model="searchText"
+            @input="$emit('search', searchText)"
+            class="border rounded px-10 py-1 text-sm text-gray-700 w-48 border-gray-400"
           />
-          <div
-            class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-600 border-2 border-white"
+          <!-- Position the icon absolutely within the container -->
+          <span
+            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
           >
-            +2
-          </div>
+            <!-- Using an inline SVG for the search icon -->
+            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fill-rule="evenodd"
+                d="M12.9 14.32a8 8 0 111.414-1.414l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387zM8 14a6 6 0 100-12 6 6 0 000 12z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </span>
         </div>
 
         <button
-          class="flex items-center gap-1 bg-purple-600 text-white px-4 py-2 rounded-md text-sm hover:bg-purple-700"
+          class="text-gray-600 hover:text-gray-800 border border-gray-400 p-1 rounded-lg"
         >
-          Invite Member
+          <i class="fa-solid fa-share-from-square h-5 w-5 text-gray-400"></i>
         </button>
+
         <button
-          class="flex items-center gap-1 border px-4 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100"
+          class="text-gray-600 hover:text-gray-800 border border-gray-400 p-1 rounded-lg"
         >
-          Share
+          <i class="fa-solid fa-gear text-gray-400"></i>
         </button>
       </div>
     </div>
 
-    <!-- Tabs, Filters, Search -->
-    <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
-      <!-- Tabs -->
-      <div class="flex gap-4 text-gray-700 font-medium text-sm">
-        <button
-          v-for="tab in tabs"
-          :key="tab"
-          @click="$emit('change-tab', tab)"
-          :class="[
-            'px-3 py-2 rounded',
-            activeTab === tab
-              ? 'text-purple-600 border-b-2 border-purple-600'
-              : 'hover:text-purple-600',
-          ]"
-        >
-          {{ tab }}
-        </button>
-      </div>
-
-      <!-- Filter, Sort, Group -->
-      <div class="flex gap-2 items-center">
-        <select class="border rounded px-3 py-1 text-sm text-gray-700">
-          <option>Filter</option>
-        </select>
-        <select class="border rounded px-3 py-1 text-sm text-gray-700">
-          <option>Group by</option>
-        </select>
-        <select class="border rounded px-3 py-1 text-sm text-gray-700">
-          <option>Sort</option>
-        </select>
-
-        <!-- Search -->
-        <input
-          type="text"
-          placeholder="Search tasks..."
-          v-model="searchText"
-          @input="$emit('search', searchText)"
-          class="border rounded px-3 py-1 text-sm text-gray-700 w-48"
-        />
-      </div>
-    </div>
+    <!-- Divider -->
   </div>
-  <hr class="mb-7 text-gray-300" />
 </template>
 
 <script setup>
 import { ref } from "vue";
+
 const props = defineProps({
   activeTab: String,
 });
 
-const emit = defineEmits(["change-tab", "search"]);
-
-const tabs = ["Board", "List", "Table"];
+const emit = defineEmits(["search"]);
 
 const searchText = ref("");
-
-const avatars = [
-  "https://randomuser.me/api/portraits/men/32.jpg",
-  "https://randomuser.me/api/portraits/women/44.jpg",
-  "https://randomuser.me/api/portraits/men/76.jpg",
-];
 </script>

@@ -44,35 +44,6 @@
             </div>
           </div>
 
-          <!-- Label with Dot -->
-          <div class="flex items-center text-left mb-1">
-            <p
-              :class="{
-                'bg-blue-100 text-blue-800':
-                  normalizeLabel(element.label) === 'notstarted',
-                'bg-orange-100 text-orange-800':
-                  normalizeLabel(element.label) === 'inresearch',
-                'bg-green-100 text-green-800':
-                  normalizeLabel(element.label) === 'complete',
-                'bg-pink-100 text-pink-800':
-                  normalizeLabel(element.label) === 'ontrack',
-              }"
-              class="text-xs rounded-sm px-2 py-0.5 inline-flex items-center font-medium"
-            >
-              <span
-                class="w-2 h-2 rounded-full mr-1"
-                :class="{
-                  'bg-blue-800': normalizeLabel(element.label) === 'notstarted',
-                  'bg-orange-800':
-                    normalizeLabel(element.label) === 'inresearch',
-                  'bg-green-800': normalizeLabel(element.label) === 'complete',
-                  'bg-pink-800': normalizeLabel(element.label) === 'ontrack',
-                }"
-              ></span>
-              {{ element.label }}
-            </p>
-          </div>
-
           <!-- Task Title and Description -->
           <h3
             class="text-sm font-semibold text-gray-800 text-left leading-snug"
@@ -97,19 +68,45 @@
                 element.assignee
               }}</span>
             </p>
-            <p class="text-right mb-1">
+
+            <!-- Priority and Label in Same Line -->
+            <div class="flex justify-between items-center mt-2">
+              <!-- Label -->
+              <p
+                :class="{
+                  'text-pink-600 font-semibold':
+                    normalizeLabel(element.label) === 'yesterday',
+                  'text-orange-600 font-semibold':
+                    normalizeLabel(element.label) === 'today',
+                  'text-blue-600 font-semibold':
+                    normalizeLabel(element.label) === 'tomorrow',
+                  'text-yellow-600 font-semibold':
+                    normalizeLabel(element.label) === 'dayaftertomorrow',
+                }"
+                class="text-xs rounded-sm px-2 py-0.5 inline-flex items-center font-medium"
+              >
+                <img
+                  :src="`https://i.pravatar.cc/20?img=${
+                    Math.floor(Math.random() * 70) + 1
+                  }`"
+                  alt="Person"
+                  class="w-5 h-5 rounded-full mr-1 object-cover"
+                />
+                {{ element.label }}
+              </p>
+
               <label
                 :class="{
-                  'bg-gray-200 p-2 text-gray-700 ':
+                  'bg-gray-200 p-2 text-gray-700':
                     element.priority === 'Programming',
                   'bg-gray-200 p-1 text-gray-700':
                     element.priority === 'Design',
                 }"
-                class="rounded px-1"
+                class="rounded px-2 text-xs"
               >
                 {{ element.priority }}
               </label>
-            </p>
+            </div>
           </div>
         </div>
       </template>
@@ -126,6 +123,7 @@
       </template>
     </draggable>
 
+    <!-- Edit Modal -->
     <transition name="fade-slide">
       <div
         v-if="isEditModalOpen"
@@ -157,6 +155,7 @@
               </svg>
             </button>
           </div>
+
           <div class="space-y-4">
             <div>
               <label class="block mb-1 text-sm font-medium text-gray-700">
@@ -169,6 +168,7 @@
                 class="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
             </div>
+
             <div>
               <label class="block mb-1 text-sm font-medium text-gray-700">
                 Description
@@ -180,6 +180,7 @@
                 class="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
               ></textarea>
             </div>
+
             <div>
               <label class="block mb-1 text-sm font-medium text-gray-700">
                 Assignee
@@ -191,6 +192,7 @@
                 class="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
             </div>
+
             <div>
               <label class="block mb-1 text-sm font-medium text-gray-700">
                 Due Date
@@ -201,6 +203,7 @@
                 class="w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
               />
             </div>
+
             <div>
               <label class="block mb-1 text-sm font-medium text-gray-700">
                 Priority
@@ -215,6 +218,7 @@
               </select>
             </div>
           </div>
+
           <div class="flex justify-end items-center mt-6">
             <button
               class="text-gray-600 hover:text-gray-800 mr-2"
@@ -253,6 +257,7 @@ const editableTask = reactive({
   description: "",
   assignee: "",
   dueDate: "",
+  priority: "",
 });
 
 function toggleDropdown(id) {
@@ -286,6 +291,7 @@ function openEditModal(task) {
   editableTask.description = task.description;
   editableTask.assignee = task.assignee;
   editableTask.dueDate = task.dueDate;
+  editableTask.priority = task.priority;
   isEditModalOpen.value = true;
   dropdownOpen.value = null;
 }
